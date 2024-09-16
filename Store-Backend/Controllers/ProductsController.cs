@@ -22,6 +22,10 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Products
+        /// <summary>
+        /// Get all products.
+        /// </summary>
+        /// <response code="200">Ok</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
@@ -31,6 +35,12 @@ namespace Store_Backend.Controllers
 
 
         // GET: api/Products/5
+        /// <summary>
+        /// Get products by id.
+        /// </summary>
+        /// <param name="id">Product Id</param>
+        /// <response code="200">Ok</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -45,7 +55,14 @@ namespace Store_Backend.Controllers
         }
 
         // PUT: api/Products/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modify product by id.
+        /// </summary>
+        /// <param name="id">Product Id</param>
+        /// <param name="product">Product</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="422">Bad Request</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -76,7 +93,11 @@ namespace Store_Backend.Controllers
         }
 
         // POST: api/Products
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Create a new product.
+        /// </summary>
+        /// <param name="product">Product</param>
+        /// <response code="201">Created</response>
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
@@ -87,6 +108,12 @@ namespace Store_Backend.Controllers
         }
 
         // DELETE: api/Products/5
+        /// <summary>
+        /// Delete a product.
+        /// </summary>
+        /// <param name="id">Product Id</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

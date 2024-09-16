@@ -23,6 +23,10 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Orders
+        /// <summary>
+        /// Get all orders.
+        /// </summary>
+        /// <response code="200">Ok</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
@@ -30,6 +34,12 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Orders/5
+        /// <summary>
+        /// Get order by id.
+        /// </summary>
+        /// <param name="id">Order Id</param>
+        /// <response code="200">Ok</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
@@ -44,7 +54,14 @@ namespace Store_Backend.Controllers
         }
 
         // PUT: api/Orders/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modify order by id.
+        /// </summary>
+        /// <param name="id">Order Id</param>
+        /// <param name="order">Order</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="422">Bad Request</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
@@ -75,7 +92,11 @@ namespace Store_Backend.Controllers
         }
 
         // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Create a new order.
+        /// </summary>
+        /// <param name="order">Order</param>
+        /// <response code="201">Created</response>
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
@@ -85,6 +106,15 @@ namespace Store_Backend.Controllers
             return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
         }
 
+        // POST: api/Orders/CreateOrder
+        /// <summary>
+        /// Create a new purchase order with different products.
+        /// </summary>
+        /// <param name="order">Purchase Order</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="422">Bad Request</response>
+        /// <response code="500">Internet Server Error</response>
         [HttpPost("CreateOrder")]
         public async Task<ActionResult<Order>> CreateOrder([FromBody] PurchaseOrder order)
         {
@@ -150,12 +180,18 @@ namespace Store_Backend.Controllers
             }
             catch (Exception ex)
             {
-                // If an error occurs, roll back the transaction and return a StatusCode 500
+                // If an error occurs,return a StatusCode 500
                 return StatusCode(500, $"An error occurred while processing the order: {ex.Message}");
             }
         }
 
         // DELETE: api/Orders/5
+        /// <summary>
+        /// Delete a order.
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {

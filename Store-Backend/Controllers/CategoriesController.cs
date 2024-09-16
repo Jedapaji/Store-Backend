@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,10 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Categories
+        /// <summary>
+        /// Get all categories.
+        /// </summary>
+        /// <response code="200">Ok</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
@@ -29,6 +34,12 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Categories/5
+        /// <summary>
+        /// Get category by id.
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <response code="200">Ok</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
@@ -43,7 +54,14 @@ namespace Store_Backend.Controllers
         }
 
         // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modify category by id.
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <param name="category">Category</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="422">Bad Request</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
@@ -74,7 +92,11 @@ namespace Store_Backend.Controllers
         }
 
         // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Create a new category.
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <response code="201">Created</response>
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
@@ -85,6 +107,12 @@ namespace Store_Backend.Controllers
         }
 
         // DELETE: api/Categories/5
+        /// <summary>
+        /// Delete a category.
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

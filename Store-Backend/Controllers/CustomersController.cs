@@ -22,6 +22,10 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Customers
+        /// <summary>
+        /// Get all customers.
+        /// </summary>
+        /// <response code="200">Ok</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
@@ -29,6 +33,12 @@ namespace Store_Backend.Controllers
         }
 
         // GET: api/Customers/5
+        /// <summary>
+        /// Get customer by id.
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <response code="200">Ok</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
@@ -43,7 +53,14 @@ namespace Store_Backend.Controllers
         }
 
         // PUT: api/Customers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Modify customer by id.
+        /// </summary>
+        /// <param name="id">Customer Id</param>
+        /// <param name="customer">Customer</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="422">Bad Request</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
@@ -74,7 +91,11 @@ namespace Store_Backend.Controllers
         }
 
         // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Create a new customer.
+        /// </summary>
+        /// <param name="customer">Customer</param>
+        /// <response code="201">Created</response>
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
@@ -85,6 +106,12 @@ namespace Store_Backend.Controllers
         }
 
         // DELETE: api/Customers/5
+        /// <summary>
+        /// Delete a customer.
+        /// </summary>
+        /// <param name="id">Customer Id</param>
+        /// <response code="204">Not Content</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {

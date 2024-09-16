@@ -3,6 +3,7 @@ using Store_Backend.Models;
 
 namespace Store_Backend.Context
 {
+    #pragma warning disable CS1591
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
@@ -16,4 +17,5 @@ namespace Store_Backend.Context
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Product> Products { get; set; }
     }
+    #pragma warning restore CS1591
 }
