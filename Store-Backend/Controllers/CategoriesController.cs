@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Store_Backend.Context;
+using Store_Backend.DTOs;
 using Store_Backend.Models;
+using Store_Backend.Services;
 
 namespace Store_Backend.Controllers
 {
@@ -15,11 +17,11 @@ namespace Store_Backend.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(AppDbContext context)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         // GET: api/Categories
@@ -28,9 +30,10 @@ namespace Store_Backend.Controllers
         /// </summary>
         /// <response code="200">Ok</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return Ok(categories);
         }
 
         // GET: api/Categories/5
@@ -41,16 +44,10 @@ namespace Store_Backend.Controllers
         /// <response code="200">Ok</response>
         /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return category;
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+            return Ok(category);
         }
 
         // PUT: api/Categories/5
@@ -58,51 +55,27 @@ namespace Store_Backend.Controllers
         /// Modify category by id.
         /// </summary>
         /// <param name="id">Category Id</param>
-        /// <param name="category">Category</param>
-        /// <response code="204">Not Content</response>
+        /// <param name="updateCategoryDto">Category update data</param>
+        /// <response code="200">Ok</response>
         /// <response code="404">Not Found</response>
-        /// <response code="422">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<ActionResult<CategoryDto>> PutCategory(int id, UpdateCategoryDto updateCategoryDto)
         {
-            if (id != category.CategoryId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var category = await _categoryService.UpdateCategoryAsync(id, updateCategoryDto);
+            return Ok(category);
         }
 
         // POST: api/Categories
         /// <summary>
         /// Create a new category.
         /// </summary>
-        /// <param name="category">Category</param>
+        /// <param name="createCategoryDto">Category creation data</param>
         /// <response code="201">Created</response>
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryDto>> PostCategory(CreateCategoryDto createCategoryDto)
         {
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
+            var category = await _categoryService.CreateCategoryAsync(createCategoryDto);
             return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
         }
 
@@ -116,21 +89,8 @@ namespace Store_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
+            await _categoryService.DeleteCategoryAsync(id);
             return NoContent();
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.CategoryId == id);
         }
     }
 }

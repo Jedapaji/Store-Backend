@@ -1,0 +1,33 @@
+namespace Store_Backend.DTOs
+{
+    /// <summary>
+    /// DTO for creating a new product.
+    /// </summary>
+    public class CreateProductDto
+    {
+        /// <summary>
+        /// Product name.
+        /// </summary>
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// Product description.
+        /// </summary>
+        public required string Description { get; set; }
+
+        /// <summary>
+        /// Product price.
+        /// </summary>
+        public required decimal Price { get; set; }
+
+        /// <summary>
+        /// Available stock quantity.
+        /// </summary>
+        public required int Stock { get; set; }
+
+        /// <summary>
+        /// Category identifier.
+        /// </summary>
+        public required int CategoryId { get; set; }
+    }
+}

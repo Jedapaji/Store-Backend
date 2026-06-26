@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Store_Backend.Context;
+using Store_Backend.DTOs;
 using Store_Backend.Models;
+using Store_Backend.Services;
 
 namespace Store_Backend.Controllers
 {
@@ -14,11 +16,11 @@ namespace Store_Backend.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ICustomerService _customerService;
 
-        public CustomersController(AppDbContext context)
+        public CustomersController(ICustomerService customerService)
         {
-            _context = context;
+            _customerService = customerService;
         }
 
         // GET: api/Customers
@@ -27,29 +29,24 @@ namespace Store_Backend.Controllers
         /// </summary>
         /// <response code="200">Ok</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            var customers = await _customerService.GetAllCustomersAsync();
+            return Ok(customers);
         }
 
         // GET: api/Customers/5
         /// <summary>
         /// Get customer by id.
         /// </summary>
-        /// <param name="id">Category Id</param>
+        /// <param name="id">Customer Id</param>
         /// <response code="200">Ok</response>
         /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return customer;
+            var customer = await _customerService.GetCustomerByIdAsync(id);
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
@@ -57,51 +54,27 @@ namespace Store_Backend.Controllers
         /// Modify customer by id.
         /// </summary>
         /// <param name="id">Customer Id</param>
-        /// <param name="customer">Customer</param>
-        /// <response code="204">Not Content</response>
+        /// <param name="updateCustomerDto">Customer update data</param>
+        /// <response code="200">Ok</response>
         /// <response code="404">Not Found</response>
-        /// <response code="422">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        public async Task<ActionResult<CustomerDto>> PutCustomer(int id, UpdateCustomerDto updateCustomerDto)
         {
-            if (id != customer.CustomerId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var customer = await _customerService.UpdateCustomerAsync(id, updateCustomerDto);
+            return Ok(customer);
         }
 
         // POST: api/Customers
         /// <summary>
         /// Create a new customer.
         /// </summary>
-        /// <param name="customer">Customer</param>
+        /// <param name="createCustomerDto">Customer creation data</param>
         /// <response code="201">Created</response>
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<CustomerDto>> PostCustomer(CreateCustomerDto createCustomerDto)
         {
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-
+            var customer = await _customerService.CreateCustomerAsync(createCustomerDto);
             return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
         }
 
@@ -115,21 +88,8 @@ namespace Store_Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-
+            await _customerService.DeleteCustomerAsync(id);
             return NoContent();
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.CustomerId == id);
         }
     }
 }
